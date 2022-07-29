@@ -8,6 +8,12 @@ on:
   
   workflow_dispatch:
 
+env:
+  S3_BUCKET_NAME: nestjsdeploymentbucket
+  PROJECT_NAME: dist
+  AWS_CODEDEPLOY_APPLICATION_NAME: nestjsdeploymentcodedeploy
+  AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: nestjsdeplomentdevgroup
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,3 +37,16 @@ jobs:
       - name: Make a zip file
         run: zip -r ./$GITHUB_SHA.zip . -x "node_modules/*" "coverage/*" "src/*" "test/*" "README.md" "*.git*"
         shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3
+        run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+      
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name $AWS_CODEDEPLOY_APPLICATION_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
