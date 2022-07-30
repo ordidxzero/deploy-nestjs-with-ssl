@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  nestapp:
+    build: .
+    container_name: nestapp-green
+    restart: always
+    ports:
+      - '3001:3000'
