@@ -1,7 +1,12 @@
-DOCKER_IMAGE_NAME=my-nest-app
+FROM node:alpine
 
-DOCKER_CONTAINER_NAME=nest-app
+WORKDIR /usr/src/app
+COPY package*.json ./
 
-docker build -t ${DOCKER_IMAGE_NAME} .
+RUN npm ci --only=production
 
-docker run -d -p 3001:3000 --name ${DOCKER_CONTAINER_NAME} ${DOCKER_IMAGE_NAME}
+COPY . .
+
+EXPOSE 4000
+
+CMD ['npm', 'run', 'start:prod'] 
