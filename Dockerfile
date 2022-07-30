@@ -7,6 +7,6 @@ RUN npm ci --only=production
 
 COPY . .
 
-EXPOSE 4000
+EXPOSE 3000
 
-CMD ['npm', 'run', 'start:prod'] 
+CMD ["npm", "run", "start:prod"] 
