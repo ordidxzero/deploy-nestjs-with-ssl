@@ -1,16 +1,5 @@
 #!/bin/bash
 
-cd /home/ubuntu/my-nest-app
-		  # 여기를 수정해주세요.
-		  # vvvvvvvvvvvvvvv
-sh scripts/switch-container.sh
-```
-
-```shell
-# scripts/swtich-container.sh
-
-#!/bin/bash
-
 DOCKER_APP_NAME=nestapp
 EXIST_GREEN=$(docker-compose -p ${DOCKER_APP_NAME}-green -f docker-compose.green.yml ps | grep running)
 
