@@ -10,3 +10,9 @@ permissions:
     pattern: '**'
     owner: ubuntu
     group: ubuntu
+
+hooks:
+  AfterInstall:
+    - location: scripts/execute.sh
+      timeout: 600
+      runas: ubuntu
